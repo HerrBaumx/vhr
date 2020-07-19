@@ -3,6 +3,9 @@ package org.jxiao.vhrself.service;
 import org.jxiao.vhrself.mapper.EmployeeMapper;
 import org.jxiao.vhrself.model.Employee;
 import org.jxiao.vhrself.model.RespPageBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +16,12 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
+    public final static Logger logger = LoggerFactory.getLogger(EmployeeService.class);
     @Autowired
     EmployeeMapper employeeMapper;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
     SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
@@ -40,7 +47,15 @@ public class EmployeeService {
                 + Double.parseDouble(monthFormat.format(endContract)) - Double.parseDouble(monthFormat.format(beginContract));
         employee.setContractTerm(Double.parseDouble(decimalFormat.format(month / 12)));
 
-        return employeeMapper.insertSelective(employee);
+        int result = employeeMapper.insertSelective(employee);
+        if (result == 1) {
+
+            Employee emp=employeeMapper.getEmployeeById(employee.getId());
+            logger.info(emp.toString());
+
+            rabbitTemplate.convertAndSend("java.mail.welcome", emp);
+        }
+        return result;
     }
 
     public Integer maxWorkID() {

@@ -96,6 +96,31 @@
             </if>
         </where>
     </select>
+    <select id="getEmployeeById" resultMap="AllEmployeeInfo">
+        select e.*,
+        n.id as nid,
+        n.name as nname,
+        p.id as pid,
+        p.name as pname,
+        d.id as did,
+        d.name as dname,
+        pos.id as posid,
+        pos.name as posname,
+        j.id as jid,
+        j.name as jname
+        from employee e,
+        nation n,
+        politicsstatus p,
+        department d,
+        position pos,
+        joblevel j
+        where e.nationId = n.id
+        and e.politicId = p.id
+        and e.departmentId = d.id
+        and e.posId = pos.id
+        and e.jobLevelId = j.id
+        and e.id = #{id}
+    </select>
     <select id="getEmployeeByPage" resultMap="AllEmployeeInfo">
         select e.*,
         n.id as nid,
@@ -205,7 +230,8 @@
       #{beginContract,jdbcType=DATE}, #{endContract,jdbcType=DATE}, #{workAge,jdbcType=INTEGER}
       )
   </insert>
-    <insert id="insertSelective" parameterType="org.jxiao.vhrself.model.Employee">
+    <insert id="insertSelective" parameterType="org.jxiao.vhrself.model.Employee" useGeneratedKeys="true"
+            keyProperty="id">
         insert into employee
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

@@ -1,6 +1,7 @@
 package org.jxiao.mailserver.receiver;
 
 import org.jxiao.vhrself.model.Employee;
+import org.jxiao.vhrself.model.Employeetrain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -30,15 +31,17 @@ public class MailReceiver {
     @Autowired
     TemplateEngine templateEngine;
 
-    @RabbitListener(queues = "java.mail")
+    @RabbitListener(queues = "java.mail.welcome")
     public void handler(Employee employee) {
+
+        logger.info(employee.toString());
 
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg);
 
         try {
             helper.setTo(employee.getEmail());
-            helper.setFrom(mailProperties.getPassword());
+            helper.setFrom(mailProperties.getUsername());
             helper.setSubject("入职欢迎");
             helper.setSentDate(new Date());
 
