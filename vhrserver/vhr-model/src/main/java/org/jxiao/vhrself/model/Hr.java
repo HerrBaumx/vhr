@@ -80,12 +80,6 @@ public class Hr implements UserDetails {
         this.address = address == null ? null : address.trim();
     }
 
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -106,8 +100,8 @@ public class Hr implements UserDetails {
         return enabled;
     }
 
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
@@ -126,14 +120,17 @@ public class Hr implements UserDetails {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
+    }
+
     @Override
     public String getUsername() {
         return username;
     }
 
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
     }
 
     public String getUserface() {

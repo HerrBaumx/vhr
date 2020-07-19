@@ -2,16 +2,17 @@ package org.jxiao.vhrself.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Employee {
+public class Employee implements Serializable {
     private Integer id;
 
     private String name;
 
     private String gender;
 
-    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone="Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date birthday;
 
     private String idCard;
@@ -43,7 +44,7 @@ public class Employee {
     private String specialty;
 
     private String school;
-    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone="Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date beginDate;
 
     private String workState;
@@ -51,13 +52,13 @@ public class Employee {
     private String workID;
 
     private Double contractTerm;
-    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone="Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date conversionTime;
-    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone="Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date notWorkDate;
-    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone="Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date beginContract;
-    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone="Asia/Shanghai")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private Date endContract;
     private Integer workAge;
     private Nation nation;
