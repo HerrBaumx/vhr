@@ -54,6 +54,27 @@
             <result column="jname" property="name"/>
         </association>
     </resultMap>
+    <resultMap id="EmployeeWithSalary" type="org.jxiao.vhrself.model.Employee" extends="BaseResultMap">
+        <association property="salary" javaType="org.jxiao.vhrself.model.Salary">
+            <id column="sid" property="id" jdbcType="INTEGER"/>
+            <result column="sbasicSalary" property="basicSalary" jdbcType="INTEGER"/>
+            <result column="sbonus" property="bonus" jdbcType="INTEGER"/>
+            <result column="slunchSalary" property="lunchSalary" jdbcType="INTEGER"/>
+            <result column="strafficSalary" property="trafficSalary" jdbcType="INTEGER"/>
+            <result column="sallSalary" property="allSalary" jdbcType="INTEGER"/>
+            <result column="spensionBase" property="pensionBase" jdbcType="INTEGER"/>
+            <result column="spensionPer" property="pensionPer" jdbcType="REAL"/>
+            <result column="screateDate" property="createDate" jdbcType="TIMESTAMP"/>
+            <result column="smedicalBase" property="medicalBase" jdbcType="INTEGER"/>
+            <result column="smedicalPer" property="medicalPer" jdbcType="REAL"/>
+            <result column="saccumulationFundBase" property="accumulationFundBase" jdbcType="INTEGER"/>
+            <result column="saccumulationFundPer" property="accumulationFundPer" jdbcType="REAL"/>
+            <result column="sname" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="department" javaType="org.jxiao.vhrself.model.Department">
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
     <sql id="Base_Column_List">
     id, name, gender, birthday, idCard, wedlock, nationId, nativePlace, politicId, email, 
     phone, address, departmentId, jobLevelId, posId, engageForm, tiptopDegree, specialty, 
@@ -61,6 +82,33 @@
     beginContract, endContract, workAge
   </sql>
 
+    <select id="getEmployeeByPageWithSalary" resultMap="EmployeeWithSalary">
+        select e.*,
+        d.name                 as dname,
+        s.id                   as sid,
+        s.name                 as sname,
+        s.allSalary            as sallSalary,
+        s.bonus                as sbonus,
+        s.createDate           as screateDate,
+        s.basicSalary          as sbasicSalary,
+        s.trafficSalary        as strafficSalary,
+        s.lunchSalary          as slunchSalary,
+        s.pensionPer           as spensionPer,
+        s.pensionBase          as spensionBase,
+        s.medicalPer           as smedicalPer,
+        s.medicalBase          as smedicalBase,
+        s.accumulationFundPer  as saccumulationFundPer,
+        s.accumulationFundBase as saccumulationFundBase
+        from employee e
+        left join
+        empsalary es on e.id = es.eid
+        left join
+        salary s on es.sid = s.id
+        left join department d on e.departmentId = d.id
+        <if test="page != null and size != null">
+            limit #{page},#{size}
+        </if>
+    </select>
     <select id="maxWorkID" resultType="java.lang.Integer">
         select max(workID) from employee;
 

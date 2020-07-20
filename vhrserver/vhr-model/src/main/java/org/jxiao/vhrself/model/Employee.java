@@ -66,6 +66,15 @@ public class Employee implements Serializable {
     private Department department;
     private Position position;
     private JobLevel jobLevel;
+    private Salary salary;
+
+    public Salary getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Salary salary) {
+        this.salary = salary;
+    }
 
     public Nation getNation() {
         return nation;

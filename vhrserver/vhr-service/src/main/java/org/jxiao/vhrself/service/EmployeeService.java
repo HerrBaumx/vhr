@@ -2,6 +2,7 @@ package org.jxiao.vhrself.service;
 
 import org.jxiao.vhrself.mapper.EmployeeMapper;
 import org.jxiao.vhrself.model.Employee;
+import org.jxiao.vhrself.model.RespBean;
 import org.jxiao.vhrself.model.RespPageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,5 +73,17 @@ public class EmployeeService {
 
     public Integer addEmps(List<Employee> list) {
         return employeeMapper.addEmps(list);
+    }
+
+    public RespPageBean getEmployeeByPageWithSalary(Integer page, Integer size) {
+        if (page != null && size != null) {
+            page = (page - 1) * size;
+        }
+
+        List<Employee> list = employeeMapper.getEmployeeByPageWithSalary(page, size);
+        RespPageBean respPageBean = new RespPageBean();
+        respPageBean.setData(list);
+        respPageBean.setTotal(employeeMapper.getTotal(null, null));
+        return respPageBean;
     }
 }
