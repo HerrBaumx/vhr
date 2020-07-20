@@ -23,4 +23,7 @@ public class SalaryService {
         return salaryMapper.insertSelective(salary);
     }
 
+    public Integer deleteSalaryById(Integer id) {
+        return salaryMapper.deleteByPrimaryKey(id);
+    }
 }
