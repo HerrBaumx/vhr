@@ -6,10 +6,7 @@ import org.jxiao.vhrself.model.Salary;
 import org.jxiao.vhrself.service.EmployeeService;
 import org.jxiao.vhrself.service.SalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +31,14 @@ public class SobController {
     @GetMapping("/salaries")
     public List<Salary> getAllSalaries() {
         return salaryService.getAllSalaries();
+    }
+
+    @PutMapping("/")
+    public RespBean updateEmployeeSalaryById(Integer eid, Integer sid) {
+        Integer result = employeeService.updateEmployeeSalaryById(eid, sid);
+        if (result == 1 || result == 2) {
+            return RespBean.ok("跟新成功！");
+        }
+        return RespBean.error("跟新失败！");
     }
 }

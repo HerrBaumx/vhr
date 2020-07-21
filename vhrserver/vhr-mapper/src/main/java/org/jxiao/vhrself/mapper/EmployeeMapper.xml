@@ -84,20 +84,20 @@
 
     <select id="getEmployeeByPageWithSalary" resultMap="EmployeeWithSalary">
         select e.*,
-        d.name                 as dname,
-        s.id                   as sid,
-        s.name                 as sname,
-        s.allSalary            as sallSalary,
-        s.bonus                as sbonus,
-        s.createDate           as screateDate,
-        s.basicSalary          as sbasicSalary,
-        s.trafficSalary        as strafficSalary,
-        s.lunchSalary          as slunchSalary,
-        s.pensionPer           as spensionPer,
-        s.pensionBase          as spensionBase,
-        s.medicalPer           as smedicalPer,
-        s.medicalBase          as smedicalBase,
-        s.accumulationFundPer  as saccumulationFundPer,
+        d.name as dname,
+        s.id as sid,
+        s.name as sname,
+        s.allSalary as sallSalary,
+        s.bonus as sbonus,
+        s.createDate as screateDate,
+        s.basicSalary as sbasicSalary,
+        s.trafficSalary as strafficSalary,
+        s.lunchSalary as slunchSalary,
+        s.pensionPer as spensionPer,
+        s.pensionBase as spensionBase,
+        s.medicalPer as smedicalPer,
+        s.medicalBase as smedicalBase,
+        s.accumulationFundPer as saccumulationFundPer,
         s.accumulationFundBase as saccumulationFundBase
         from employee e
         left join
@@ -105,6 +105,7 @@
         left join
         salary s on es.sid = s.id
         left join department d on e.departmentId = d.id
+        order by e.id
         <if test="page != null and size != null">
             limit #{page},#{size}
         </if>
@@ -255,6 +256,9 @@
             #{emp.beginContract,jdbcType=DATE}, #{emp.endContract,jdbcType=DATE}, #{emp.workAge,jdbcType=INTEGER}
             )
         </foreach>
+    </insert>
+    <insert id="updateEmployeeSalaryById">
+        replace into empsalary(eid, sid) VALUES (#{eid},#{sid})
     </insert>
     <insert id="insert" parameterType="org.jxiao.vhrself.model.Employee">
     insert into employee (id, name, gender, 
