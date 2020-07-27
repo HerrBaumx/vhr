@@ -5,6 +5,8 @@ import org.jxiao.vhrself.mapper.MenuRoleMapper;
 import org.jxiao.vhrself.model.Hr;
 import org.jxiao.vhrself.model.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "menus_cache")
 public class MenuService {
     @Autowired
     MenuMapper menuMapper;
@@ -19,6 +22,7 @@ public class MenuService {
     @Autowired
     MenuRoleMapper menuRoleMapper;
 
+    @Cacheable(cacheNames = "menus_cache")
     public List<Menu> getMenuByHrId() {
 
         return menuMapper.getMenuByHrId(((Hr) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
