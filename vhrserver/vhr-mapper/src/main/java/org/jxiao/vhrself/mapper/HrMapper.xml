@@ -151,6 +151,9 @@
             </if>
         </trim>
     </insert>
+    <update id="updateHrPasswd">
+        update hr set password=#{encodePass} where id=#{hrid}
+    </update>
     <update id="updateByPrimaryKeySelective" parameterType="org.jxiao.vhrself.model.Hr">
         update hr
         <set>

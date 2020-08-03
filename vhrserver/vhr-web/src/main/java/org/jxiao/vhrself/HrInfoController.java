@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class HrInfoController {
     @Autowired
@@ -27,6 +29,17 @@ public class HrInfoController {
         if (hrSerice.updateHr(hr) == 1) {
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(hr,
                     authentication.getCredentials(), authentication.getAuthorities()));
+            return RespBean.ok("更新成功！");
+        }
+        return RespBean.error("更新失败！");
+    }
+
+    @PutMapping("/hr/pass")
+    public RespBean updateHrPasswd(@RequestBody Map<String, Object> info) {
+        String oldPass = (String) info.get("oldPass");
+        String pass = (String) info.get("pass");
+        Integer hrid = (Integer) info.get("hrid");
+        if (hrSerice.updateHrPasswd(oldPass, pass, hrid)) {
             return RespBean.ok("更新成功！");
         }
         return RespBean.error("更新失败！");

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class HrSerice implements UserDetailsService {
     }
 
     public List<Hr> getAllHrs(String keywords) {
-        return hrMapper.getAllHrs(HrUtils.getCurrentHr().getId(),keywords);
+        return hrMapper.getAllHrs(HrUtils.getCurrentHr().getId(), keywords);
     }
 
     public Integer updateHr(Hr hr) {
@@ -45,7 +46,7 @@ public class HrSerice implements UserDetailsService {
     public boolean updateHrRoles(Integer hrid, Integer[] rids) {
 
         hrRoleMapper.deleteByHrid(hrid);
-        return hrRoleMapper.addRoles(hrid,rids)==rids.length;
+        return hrRoleMapper.addRoles(hrid, rids) == rids.length;
     }
 
     public Integer deleteHrById(Integer id) {
@@ -56,4 +57,18 @@ public class HrSerice implements UserDetailsService {
         return hrMapper.getAllHrsExceptCurrentHr(HrUtils.getCurrentHr().getId());
     }
 
+    public boolean updateHrPasswd(String oldPass, String pass, Integer hrid) {
+        Hr hr = hrMapper.selectByPrimaryKey(hrid);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (encoder.matches(oldPass, hr.getPassword())) {
+            String encodePass = encoder.encode(pass);
+
+            Integer result = hrMapper.updateHrPasswd(hrid, encodePass);
+            if (result == 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
