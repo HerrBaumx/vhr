@@ -151,6 +151,9 @@
             </if>
         </trim>
     </insert>
+    <update id="updateHrUserface">
+        update hr set userface=#{url} where id=#{id}
+    </update>
     <update id="updateHrPasswd">
         update hr set password=#{encodePass} where id=#{hrid}
     </update>

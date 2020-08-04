@@ -1,23 +1,31 @@
-package org.jxiao.vhrself;
+package org.jxiao.vhrself.controller;
 
+import org.csource.common.MyException;
+import org.csource.fastdfs.ProtoCommon;
+import org.jxiao.vhrself.config.FastDFSUtils;
 import org.jxiao.vhrself.model.Hr;
 import org.jxiao.vhrself.model.RespBean;
 import org.jxiao.vhrself.service.HrSerice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.Map;
 
 @RestController
 public class HrInfoController {
     @Autowired
     HrSerice hrSerice;
+
+    @Value("${fastdfs.nginx.host}")
+    String nginxHost;
 
     @GetMapping("/hr/info")
     public Hr getCurrentHr(Authentication authentication) {
@@ -41,6 +49,28 @@ public class HrInfoController {
         Integer hrid = (Integer) info.get("hrid");
         if (hrSerice.updateHrPasswd(oldPass, pass, hrid)) {
             return RespBean.ok("更新成功！");
+        }
+        return RespBean.error("更新失败！");
+    }
+
+    @PostMapping("/hr/userface")
+    public RespBean updateHrUserface(MultipartFile file, Integer id) throws UnsupportedEncodingException,
+            NoSuchAlgorithmException, MyException {
+        String fileId = FastDFSUtils.upload(file);
+        int ts = (int) Instant.now().getEpochSecond();
+        String s = fileId.substring(fileId.indexOf("/")+1);
+        String token = ProtoCommon.getToken(fileId.substring(fileId.indexOf("/")+1), ts,
+                "FastDFS1234567890");
+        StringBuffer url1 = new StringBuffer();
+        url1.append(nginxHost)
+                .append(fileId)
+                .append("?token=")
+                .append(token)
+                .append("&ts=")
+                .append(ts);
+        String url = nginxHost + fileId;
+        if (hrSerice.updateHrUserface(url, id) == 1) {
+            return RespBean.ok("更新成功！", url1);
         }
         return RespBean.error("更新失败！");
     }

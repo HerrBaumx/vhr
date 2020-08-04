@@ -71,4 +71,8 @@ public class HrSerice implements UserDetailsService {
 
         return false;
     }
+
+    public Integer updateHrUserface(String url, Integer id) {
+        return hrMapper.updateHrUserface(url, id);
+    }
 }
