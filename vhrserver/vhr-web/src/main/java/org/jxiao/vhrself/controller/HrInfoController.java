@@ -54,12 +54,12 @@ public class HrInfoController {
     }
 
     @PostMapping("/hr/userface")
-    public RespBean updateHrUserface(MultipartFile file, Integer id) throws UnsupportedEncodingException,
+    public RespBean updateHrUserface(MultipartFile file, Integer id, Authentication authentication) throws UnsupportedEncodingException,
             NoSuchAlgorithmException, MyException {
         String fileId = FastDFSUtils.upload(file);
         int ts = (int) Instant.now().getEpochSecond();
-        String s = fileId.substring(fileId.indexOf("/")+1);
-        String token = ProtoCommon.getToken(fileId.substring(fileId.indexOf("/")+1), ts,
+        String s = fileId.substring(fileId.indexOf("/") + 1);
+        String token = ProtoCommon.getToken(fileId.substring(fileId.indexOf("/") + 1), ts,
                 "FastDFS1234567890");
         StringBuffer url1 = new StringBuffer();
         url1.append(nginxHost)
@@ -68,8 +68,13 @@ public class HrInfoController {
                 .append(token)
                 .append("&ts=")
                 .append(ts);
-        String url = nginxHost + fileId;
-        if (hrSerice.updateHrUserface(url, id) == 1) {
+//        String url = nginxHost + fileId;
+        if (hrSerice.updateHrUserface(url1.toString(), id) == 1) {
+            Hr hr = (Hr) authentication.getPrincipal();
+            hr.setUserface(url1.toString());
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(hr,
+                    authentication.getCredentials(), authentication.getAuthorities()));
+
             return RespBean.ok("更新成功！", url1);
         }
         return RespBean.error("更新失败！");
